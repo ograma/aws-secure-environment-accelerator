@@ -964,8 +964,6 @@ export namespace InitialSetup {
       // Landing Zone Config Setup
       const ctConfigDefinition = loadControlTowerConfigurationTask.startState
         .next(addRoleToServiceCatalog)
-        .next(createLandingZoneAccountsTask)
-        .next(commonDefinition);
 
       const cloudFormationMasterRoleChoice = new sfn.Choice(this, 'Install CloudFormation Role in Master?')
         .when(
