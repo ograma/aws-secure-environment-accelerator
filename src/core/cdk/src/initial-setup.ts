@@ -223,6 +223,26 @@ export namespace InitialSetup {
         resultPath: '$.configuration',
       });
 
+      const loadControlTowerConfigurationTask = new CodeTask(this, 'Load Control Tower Configuration', {
+        functionProps: {
+          code: lambdaCode,
+          handler: 'index.loadControlTowerConfigurationStep',
+          role: pipelineRole,
+        },
+        functionPayload: {
+          configRepositoryName: props.configRepositoryName,
+          'configFilePath.$': '$.configuration.configFilePath',
+          'configCommitId.$': '$.configuration.configCommitId',
+          'baseline.$': '$.configuration.baselineOutput.baseline',
+          'storeAllOutputs.$': '$.configuration.baselineOutput.storeAllOutputs',
+          'phases.$': '$.configuration.baselineOutput.phases',
+          'acceleratorVersion.$': '$.configuration.acceleratorVersion',
+          'configRootFilePath.$': '$.configuration.configRootFilePath',
+          'organizationAdminRole.$': '$.configuration.baselineOutput.organizationAdminRole',
+        },
+        resultPath: '$.configuration',
+      });
+
       const loadOrgConfigurationTask = new CodeTask(this, 'Load Organization Configuration', {
         functionProps: {
           code: lambdaCode,
@@ -245,8 +265,8 @@ export namespace InitialSetup {
       });
 
       // TODO We might want to load this from the Landing Zone configuration
-      const avmProductName = 'AWS-Landing-Zone-Account-Vending-Machine';
-      const avmPortfolioName = 'AWS Landing Zone - Baseline';
+      const avmProductName = 'AWS Control Tower Account Factory';
+      const avmPortfolioName = 'AWS Control Tower Account Factory Portfolio';
 
       const addRoleToServiceCatalog = new CodeTask(this, 'Add Execution Role to Service Catalog', {
         functionProps: {
@@ -940,6 +960,12 @@ export namespace InitialSetup {
         .next(addRoleToServiceCatalog)
         .next(createLandingZoneAccountsTask)
         .next(commonDefinition);
+      
+      // Landing Zone Config Setup
+      const ctConfigDefinition = loadControlTowerConfigurationTask.startState
+        .next(addRoleToServiceCatalog)
+        .next(createLandingZoneAccountsTask)
+        .next(commonDefinition);
 
       const cloudFormationMasterRoleChoice = new sfn.Choice(this, 'Install CloudFormation Role in Master?')
         .when(
@@ -964,6 +990,10 @@ export namespace InitialSetup {
         .when(
           sfn.Condition.stringEquals('$.configuration.baselineOutput.baseline', 'ORGANIZATIONS'),
           orgConfigDefinition,
+        )
+        .when(
+          sfn.Condition.stringEquals('$.configuration.baselineOutput.baseline', 'CONTROL_TOWER'),
+          ctConfigDefinition,
         )
         .otherwise(
           new sfn.Fail(this, 'Fail', {
