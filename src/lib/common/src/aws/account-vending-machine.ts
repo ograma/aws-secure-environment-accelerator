@@ -79,8 +79,12 @@ export class AccountVendingMachine {
               Value: emailAddress,
             },
             {
-              Key: 'OrgUnitName',
+              Key: 'ManagedOrganizationalUnit',
               Value: organizationalUnit,
+            },
+            {
+              Key: 'SSOUserEmail',
+              Value: emailAddress,
             },
             {
               Key: 'VPCOptions',
