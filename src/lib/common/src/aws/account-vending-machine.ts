@@ -87,6 +87,14 @@ export class AccountVendingMachine {
               Value: emailAddress,
             },
             {
+              Key: 'SSOUserFirstName',
+              Value: accountName,
+            },
+            {
+              Key: 'SSOUserLastName',
+              Value: accountName,
+            },
+            {
               Key: 'VPCOptions',
               Value: 'No-Primary-VPC' /* CA PBMM requirement. Please do not alter. */,
             },
