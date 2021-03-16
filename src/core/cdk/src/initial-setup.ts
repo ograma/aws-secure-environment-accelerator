@@ -219,6 +219,7 @@ export namespace InitialSetup {
           'acceleratorVersion.$': '$.configuration.acceleratorVersion',
           'configRootFilePath.$': '$.configuration.configRootFilePath',
           'organizationAdminRole.$': '$.configuration.baselineOutput.organizationAdminRole',
+          'smInput.$': '$.configuration.smInput'
         },
         resultPath: '$.configuration',
       });
@@ -239,6 +240,7 @@ export namespace InitialSetup {
           'acceleratorVersion.$': '$.configuration.acceleratorVersion',
           'configRootFilePath.$': '$.configuration.configRootFilePath',
           'organizationAdminRole.$': '$.configuration.baselineOutput.organizationAdminRole',
+          'smInput.$': '$.configuration.smInput'
         },
         resultPath: '$.configuration',
       });
@@ -931,6 +933,7 @@ export namespace InitialSetup {
 
       const enableConfigChoice = new sfn.Choice(this, 'Create Config Recorders?')
         .when(sfn.Condition.stringEquals('$.baseline', 'ORGANIZATIONS'), createConfigRecordersTask.next(commonStep1))
+        .when(sfn.Condition.stringEquals('$.baseline', 'CONTROL_TOWER'), createConfigRecordersTask.next(commonStep1))
         .otherwise(commonStep1)
         .afterwards();
 

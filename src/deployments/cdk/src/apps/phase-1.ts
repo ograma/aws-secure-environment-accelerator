@@ -81,7 +81,7 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
     throw new Error(`Cannot find mandatory primary account ${masterAccountKey}`);
   }
 
-  const { acceleratorName, installerVersion } = context;
+  const { acceleratorName, installerVersion, acceleratorBaseline } = context;
   // Find the central bucket in the outputs
   const centralBucket = CentralBucketOutput.getBucket({
     accountStacks,
@@ -455,7 +455,7 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
     outputs,
   });
 
-  if (!acceleratorConfig['global-options']['alz-baseline']) {
+  if (acceleratorBaseline === 'ORGANIZATIONS') {
     // GuardDuty step 1
     // to use step1 need this to be fixed: https://t.corp.amazon.com/P36821200/overview
     await guardDutyDeployment.step1({

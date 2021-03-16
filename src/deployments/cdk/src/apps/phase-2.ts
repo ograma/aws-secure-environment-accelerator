@@ -50,7 +50,7 @@ import { logArchiveReadOnlyAccess } from '../deployments/s3/log-archive-read-acc
 
 export async function deploy({ acceleratorConfig, accountStacks, accounts, context, outputs, limiter }: PhaseInput) {
   const securityAccountKey = acceleratorConfig.getMandatoryAccountKey('central-security');
-
+  const { acceleratorBaseline } = context;
   // Find the account buckets in the outputs
   const accountBuckets = AccountBucketOutput.getAccountBuckets({
     accounts,
@@ -59,7 +59,7 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
     outputs,
   });
 
-  if (!acceleratorConfig['global-options']['alz-baseline']) {
+  if (acceleratorBaseline === 'ORGANIZATIONS') {
     await createTrail.step1({
       accountBuckets,
       accountStacks,
