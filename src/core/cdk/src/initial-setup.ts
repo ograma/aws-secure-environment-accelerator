@@ -931,9 +931,10 @@ export namespace InitialSetup {
         .next(storeCommitIdTask)
         .next(baseLineCleanupChoice);
 
+      createConfigRecordersTask.next(commonStep1);
       const enableConfigChoice = new sfn.Choice(this, 'Create Config Recorders?')
-        .when(sfn.Condition.stringEquals('$.baseline', 'ORGANIZATIONS'), createConfigRecordersTask.next(commonStep1))
-        .when(sfn.Condition.stringEquals('$.baseline', 'CONTROL_TOWER'), createConfigRecordersTask.next(commonStep1))
+        .when(sfn.Condition.stringEquals('$.baseline', 'ORGANIZATIONS'), createConfigRecordersTask)
+        .when(sfn.Condition.stringEquals('$.baseline', 'CONTROL_TOWER'), createConfigRecordersTask)
         .otherwise(commonStep1)
         .afterwards();
 
