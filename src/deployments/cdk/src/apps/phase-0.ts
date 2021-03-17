@@ -59,7 +59,7 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
     outputs,
   });
 
-  if (acceleratorBaseline === 'ORGANIZATIONS') {
+  if (['ORGANIZATIONS', 'CONTROL_TOWER'].includes(acceleratorBaseline)) {
     await passwordPolicy.step1({
       accountStacks,
       config: acceleratorConfig,
@@ -95,7 +95,7 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
     secretsContainer,
   });
 
-  if (acceleratorBaseline === 'ORGANIZATIONS') {
+  if (['ORGANIZATIONS', 'CONTROL_TOWER'].includes(acceleratorBaseline)) {
     // Create IAM role for Config Service
     await iamDeployment.createConfigServiceRoles({
       acceleratorPrefix: context.acceleratorPrefix,

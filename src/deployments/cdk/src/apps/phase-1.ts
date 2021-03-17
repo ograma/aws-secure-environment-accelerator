@@ -455,7 +455,7 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
     outputs,
   });
 
-  if (acceleratorBaseline === 'ORGANIZATIONS') {
+  if (['ORGANIZATIONS', 'CONTROL_TOWER'].includes(acceleratorBaseline)) {
     // GuardDuty step 1
     // to use step1 need this to be fixed: https://t.corp.amazon.com/P36821200/overview
     await guardDutyDeployment.step1({
